@@ -54,3 +54,25 @@ GROUP BY 1
 HAVING (f.actual_arrival - f.scheduled_arrival) IS NOT NULL
 ORDER BY 2 DESC
 LIMIT 1
+
+Задание 4.4
+Вопрос 1
+SELECT min(f.scheduled_departure)
+FROM dst_project.flights f
+Вопрос 2
+SELECT date_part('hour', f.scheduled_arrival - f.scheduled_departure) * 60 + 
+       date_part('minute', f.scheduled_arrival - f.scheduled_departure)
+FROM dst_project.flights f
+ORDER BY 1 DESC
+LIMIT 1
+Вопрос 3
+SELECT f.departure_airport,
+       f.arrival_airport,
+       date_part('hour', f.scheduled_arrival - f.scheduled_departure) * 60 + date_part('minute', f.scheduled_arrival - f.scheduled_departure)
+FROM dst_project.flights f
+ORDER BY 3 DESC
+LIMIT 3
+Вопрос 4
+SELECT avg(date_part('hour', f.scheduled_arrival - f.scheduled_departure) * 60 + 
+       date_part('minute', f.scheduled_arrival - f.scheduled_departure))
+FROM dst_project.flights f
