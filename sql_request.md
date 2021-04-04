@@ -76,3 +76,20 @@ LIMIT 3
 SELECT avg(date_part('hour', f.scheduled_arrival - f.scheduled_departure) * 60 + 
        date_part('minute', f.scheduled_arrival - f.scheduled_departure))
 FROM dst_project.flights f
+
+Задание 4.5
+Вопрос 1
+SELECT s.fare_conditions,
+       count(s.seat_no)
+FROM dst_project.seats s
+GROUP BY 1
+ORDER BY 2 DESC
+LIMIT 1
+Вопрос 2
+SELECT min(b.total_amount)
+FROM dst_project.bookings b
+Вопрос 3
+SELECT bp.seat_no
+FROM dst_project.tickets t
+JOIN dst_project.boarding_passes bp ON t.ticket_no = bp.ticket_no
+WHERE t.passenger_id = '4313 788533'
