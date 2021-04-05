@@ -98,5 +98,37 @@ WHERE t.passenger_id = '4313 788533'
 Вопрос 1
 SELECT count(f.flight_id)
 FROM dst_project.flights f
-WHERE date_part('year', f.scheduled_arrival) = '2017'
+WHERE date_part('year', f.actual_arrival) = '2017'
   AND f.arrival_airport = 'AAQ'
+Вопрос 2
+SELECT count(f.flight_id)
+FROM dst_project.flights f
+WHERE date_part('year', f.scheduled_departure) = '2017'
+  AND date_part('month', f.scheduled_departure) in ('1',
+                                                    '2',
+                                                    '12')
+  AND f.departure_airport = 'AAQ'
+Вопрос 3
+SELECT count(f.flight_id)
+FROM dst_project.flights f
+WHERE f.departure_airport = 'AAQ'
+  AND f.status = 'Cancelled'
+Вопрос 4
+SELECT count(f.flight_id)
+FROM dst_project.flights f
+WHERE f.departure_airport = 'AAQ'
+  AND f.arrival_airport not in ('DME',
+                                'SVO',
+                                'VKO')
+Вопрос 5
+WITH uniq_aircraft AS
+  (SELECT DISTINCT f.aircraft_code
+   FROM dst_project.flights f
+   WHERE f.departure_airport = 'AAQ')
+SELECT distinct(a.model),
+       count(s.seat_no)
+FROM uniq_aircraft
+JOIN dst_project.seats s ON uniq_aircraft.aircraft_code = s.aircraft_code
+JOIN dst_project.aircrafts a ON uniq_aircraft.aircraft_code = a.aircraft_code
+GROUP BY 1
+ORDER BY 2 DESC
