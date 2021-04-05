@@ -93,3 +93,10 @@ SELECT bp.seat_no
 FROM dst_project.tickets t
 JOIN dst_project.boarding_passes bp ON t.ticket_no = bp.ticket_no
 WHERE t.passenger_id = '4313 788533'
+
+Задание 5.1
+Вопрос 1
+SELECT count(f.flight_id)
+FROM dst_project.flights f
+WHERE date_part('year', f.scheduled_arrival) = '2017'
+  AND f.arrival_airport = 'AAQ'
