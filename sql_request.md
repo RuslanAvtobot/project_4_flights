@@ -132,3 +132,23 @@ JOIN dst_project.seats s ON uniq_aircraft.aircraft_code = s.aircraft_code
 JOIN dst_project.aircrafts a ON uniq_aircraft.aircraft_code = a.aircraft_code
 GROUP BY 1
 ORDER BY 2 DESC
+
+Итоговые запросы
+Смотрим на аэропорта прибытия, самолёты, максимальное время в полёте и часовые пояса.
+SELECT DISTINCT f.arrival_airport,
+                a.city,
+                a.timezone,
+                ac.model,
+                max(date_part('minute', f.actual_arrival - f.actual_departure) + date_part('hour', f.actual_arrival - f.actual_departure)*60)
+FROM dst_project.flights f
+JOIN dst_project.airports a ON f.arrival_airport = a.airport_code
+JOIN dst_project.aircrafts ac ON f.aircraft_code = ac.aircraft_code
+WHERE f.departure_airport = 'AAQ'
+  AND (date_trunc('month', f.scheduled_departure) in ('2017-01-01',
+                                                      '2017-02-01',
+                                                      '2017-12-01'))
+  AND f.status not in ('Cancelled')
+GROUP BY 1,
+         2,
+         3,
+         4
