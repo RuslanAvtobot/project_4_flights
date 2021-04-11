@@ -133,22 +133,28 @@ JOIN dst_project.aircrafts a ON uniq_aircraft.aircraft_code = a.aircraft_code
 GROUP BY 1
 ORDER BY 2 DESC
 
-Итоговые запросы
-Смотрим на аэропорта прибытия, самолёты, максимальное время в полёте и часовые пояса.
-SELECT DISTINCT f.arrival_airport,
-                a.city,
-                a.timezone,
-                ac.model,
-                max(date_part('minute', f.actual_arrival - f.actual_departure) + date_part('hour', f.actual_arrival - f.actual_departure)*60)
+Итоговый запрос
+WITH am_count AS
+  (SELECT tf.flight_id flight_id,
+          sum(tf.amount) tot_amnt,
+          count(tf.ticket_no) pass_count
+   FROM dst_project.ticket_flights tf
+   GROUP BY 1)
+SELECT f.flight_id,
+       f.arrival_airport,
+       a.city,
+       a.timezone,
+       ac.model,
+       (date_part('minute', f.actual_arrival - f.actual_departure) + date_part('hour', f.actual_arrival - f.actual_departure)*60) flight_time_min,
+       amc.tot_amnt,
+       amc.pass_count
 FROM dst_project.flights f
-JOIN dst_project.airports a ON f.arrival_airport = a.airport_code
-JOIN dst_project.aircrafts ac ON f.aircraft_code = ac.aircraft_code
+LEFT JOIN dst_project.airports a ON f.arrival_airport = a.airport_code
+LEFT JOIN dst_project.aircrafts ac ON f.aircraft_code = ac.aircraft_code
+LEFT JOIN am_count amc ON f.flight_id = amc.flight_id
 WHERE f.departure_airport = 'AAQ'
   AND (date_trunc('month', f.scheduled_departure) in ('2017-01-01',
                                                       '2017-02-01',
                                                       '2017-12-01'))
   AND f.status not in ('Cancelled')
-GROUP BY 1,
-         2,
-         3,
-         4
+ORDER BY 7 DESC
