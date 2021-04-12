@@ -141,9 +141,10 @@ WITH am_count AS
    FROM dst_project.ticket_flights tf
    GROUP BY 1)
 SELECT f.flight_id,
+       date_part('month', f.scheduled_departure) month_dep,
+       date_part('isodow', f.scheduled_departure) day_of_week_dep,
        f.arrival_airport,
        a.city,
-       a.timezone,
        ac.model,
        (date_part('minute', f.actual_arrival - f.actual_departure) + date_part('hour', f.actual_arrival - f.actual_departure)*60) flight_time_min,
        amc.tot_amnt,
