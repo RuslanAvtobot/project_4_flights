@@ -148,7 +148,8 @@ SELECT f.flight_id,
        ac.model,
        (date_part('minute', f.actual_arrival - f.actual_departure) + date_part('hour', f.actual_arrival - f.actual_departure)*60) flight_time_min,
        amc.tot_amnt,
-       amc.pass_count
+       amc.pass_count,
+       amc.tot_amnt/amc.pass_count ticket_coast_avg
 FROM dst_project.flights f
 LEFT JOIN dst_project.airports a ON f.arrival_airport = a.airport_code
 LEFT JOIN dst_project.aircrafts ac ON f.aircraft_code = ac.aircraft_code
